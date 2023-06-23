@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, send_from_directory
 import svgwrite
 import os
+import re
 
 app = Flask(__name__)
 
@@ -14,25 +15,36 @@ def home():
 
 def generate_worksheet(text):
     lines = text.split('\n')
-    line_height = 60  # the height of a line of text, adjust as needed
+    line_height = 40  # the height of a line of text, adjust as needed
     svg_height = line_height * len(lines)  # set the height of the svg
 
     dwg = svgwrite.Drawing(profile='tiny', size=('100%', f'{svg_height}px'))  # set the height of the svg
     y = line_height
+    y1 = -18
+    y2 = -9
+    y3 = 1
+    y4 = 10
+    y5 = 0
     for line in lines:
-        dwg.add(dwg.line(start=(10, y-20), end=(780, y-20), stroke=svgwrite.rgb(0, 0, 0, "%"), stroke_opacity=0.3, stroke_dasharray="2 2"))  # ascender line
-        dwg.add(dwg.line(start=(10, y), end=(780, y), stroke=svgwrite.rgb(0, 0, 0, "%"), stroke_opacity=0.3))  # median line
-        dwg.add(dwg.line(start=(10, y+20), end=(780, y+20), stroke=svgwrite.rgb(0, 0, 0, "%"), stroke_opacity=0.3, stroke_dasharray="2 2"))  # descender line
-        dwg.add(dwg.line(start=(10, y+40), end=(780, y+40), stroke=svgwrite.rgb(0, 0, 0, "%"), stroke_opacity=0.3))  # base line
-        dwg.add(dwg.text(line, insert=(20, y+20), fill="black", fill_opacity=0.3, font_size="20px", font_family="'Pacifico', cursive"))
+        dwg.add(dwg.line(start=(10, y+y1), end=(780, y+y1), stroke=svgwrite.rgb(0, 0, 0, "%"), stroke_opacity=0.3, stroke_dasharray="2 2"))  # ascender line
+        dwg.add(dwg.line(start=(10, y+y2), end=(780, y+y2), stroke=svgwrite.rgb(0, 0, 0, "%"), stroke_opacity=0.3, stroke_dasharray="2 2"))  # median line
+        dwg.add(dwg.line(start=(10, y+y3), end=(780, y+y3), stroke=svgwrite.rgb(150, 0, 0, "%"), stroke_opacity=0.6))  # descender line
+        dwg.add(dwg.line(start=(10, y+y4), end=(780, y+y4), stroke=svgwrite.rgb(0, 0, 0, "%"), stroke_opacity=0.3, stroke_dasharray="2 2"))  # base line
+        dwg.add(dwg.text(line, insert=(20, y+y5), fill="black", fill_opacity=0.3, font_size="20px", font_family="'Pacifico', cursive"))
+        dwg.add(dwg.line(start=(10, y+y1), end=(10, y+y3), stroke=svgwrite.rgb(150, 0, 0, "%"), stroke_opacity=0.6))  # left vertical line
+        dwg.add(dwg.line(start=(780, y+y1), end=(780, y+y3), stroke=svgwrite.rgb(150, 0, 0, "%"), stroke_opacity=0.6))  # right vertical line
         y += line_height  # adjust line spacing as needed
 
-    filename = 'test.html'
+    firstline = lines[0].replace("\"","").replace("\r","")
+    clean_filename = re.sub(r'\W+', '', firstline.replace(' ', '_')) + '.html'
+    filename = clean_filename
     with open(filename, 'w') as f:
-        f.write('<html><head><link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet"></head><body>')
+        f.write('<html><head><link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"></head><body style="margin: 0; padding: 0;">')
+        f.write('<div style="position: relative;">')
         f.write(dwg.tostring())
-        f.write('</body></html>')
+        f.write('</div></body></html>')
     return filename
+
 
 if __name__ == "__main__":
     app.run()
