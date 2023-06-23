@@ -51,7 +51,8 @@ def generate_worksheet(text):
     firstline = lines[0].replace("\"","").replace("\r","")
     clean_filename = re.sub(r'\W+', '', firstline.replace(' ', '_')) + '.html'
     filename = clean_filename
-    with open(filename, 'w') as f:
+    filename = clean_filename
+    with open(filename, 'w', encoding='utf-8') as f:
         f.write('<html><head><link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"></head><body style="margin: 0; padding: 0;">')
         f.write('<div style="position: relative;">')
         f.write(dwg.tostring())
