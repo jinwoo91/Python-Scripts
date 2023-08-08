@@ -1,0 +1,7 @@
+Dog
+Dog -> Labrador Retriever
+Dog -> Poodle
+Labrador Retriever -> Black Labrador
+Labrador Retriever -> Yellow Labrador
+Poodle -> Standard Poodle
+Poodle -> Miniature Poodle
